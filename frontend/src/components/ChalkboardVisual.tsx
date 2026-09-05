@@ -971,6 +971,12 @@ export const ChalkboardVisual: React.FC<ChalkboardVisualProps> = ({
                       ? "Attention Heads:"
                       : domain === "physics"
                       ? "Applied Force (F):"
+                      : domain === "cs"
+                      ? "Clock Frequency (GHz):"
+                      : domain === "biology"
+                      ? "Photon Flux / Rate:"
+                      : domain === "chemistry"
+                      ? "Reaction Temp (K):"
                       : "Execution Speed:"}
                   </span>
                   <input
@@ -982,7 +988,11 @@ export const ChalkboardVisual: React.FC<ChalkboardVisualProps> = ({
                     className="w-28 h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
                   />
                   <span className="text-xs font-mono text-cyan-400 font-bold w-12">
-                    {domain === "physics" ? `${(param1 * 1.5).toFixed(0)} N` : `${param1}%`}
+                    {domain === "physics"
+                      ? `${(param1 * 1.5).toFixed(0)} N`
+                      : domain === "cs"
+                      ? `${(param1 * 0.04 + 1.2).toFixed(1)} GHz`
+                      : `${param1}%`}
                   </span>
                 </div>
 
@@ -992,7 +1002,13 @@ export const ChalkboardVisual: React.FC<ChalkboardVisualProps> = ({
                       ? "Embedding Dim:"
                       : domain === "physics"
                       ? "Object Mass (m):"
-                      : "Layer Depth:"}
+                      : domain === "cs"
+                      ? "Active Threads:"
+                      : domain === "biology"
+                      ? "CO₂ Saturation:"
+                      : domain === "chemistry"
+                      ? "Electron Orbit Shell:"
+                      : "System Complexity:"}
                   </span>
                   <input
                     type="range"
@@ -1003,7 +1019,11 @@ export const ChalkboardVisual: React.FC<ChalkboardVisualProps> = ({
                     className="w-28 h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-400"
                   />
                   <span className="text-xs font-mono text-amber-400 font-bold w-12">
-                    {domain === "physics" ? `${param2} kg` : `${param2}`}
+                    {domain === "physics"
+                      ? `${param2} kg`
+                      : domain === "cs"
+                      ? `${Math.round(param2 * 0.16) || 1}T`
+                      : `${param2}`}
                   </span>
                 </div>
               </div>
@@ -1013,10 +1033,18 @@ export const ChalkboardVisual: React.FC<ChalkboardVisualProps> = ({
                 <button
                   onClick={() => setParam1((prev) => Math.min(100, prev + 25))}
                   className="px-3 py-1.5 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-blue-500/30 border border-cyan-500/40 rounded-lg text-xs font-mono font-bold text-cyan-300 flex items-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
-                  title="Inject +50 N Push Impulse"
+                  title="Inject Dynamic Boost"
                 >
                   <Zap className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>+50N Impulse</span>
+                  <span>
+                    {domain === "physics"
+                      ? "+50N Force"
+                      : domain === "cs"
+                      ? "+2 Cores"
+                      : domain === "ai"
+                      ? "+4 Heads"
+                      : "+Boost"}
+                  </span>
                 </button>
 
                 <button
@@ -1170,30 +1198,38 @@ export const ChalkboardVisual: React.FC<ChalkboardVisualProps> = ({
               </div>
               <p className="text-sm text-slate-200 leading-relaxed font-medium">
                 {visualData?.summary ||
+                  explanation ||
                   `Deep conceptual breakdown of ${title} structured according to progressive learning outcomes.`}
               </p>
             </div>
 
             {/* Key Takeaway */}
-            {visualData?.key_takeaway && (
+            {(visualData?.key_takeaway || explanation) && (
               <div className="p-3 bg-slate-900/90 border border-cyan-500/30 rounded-xl flex items-center gap-2.5 text-xs text-cyan-200 font-mono">
                 <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0" />
-                <span>{visualData.key_takeaway}</span>
+                <span>
+                  {visualData?.key_takeaway ||
+                    (explanation.split(/[.!?।\n]+/).map(s => s.trim()).filter(s => s.length > 15)[0] ||
+                    `Core Takeaway: Master the governing principles of ${title}.`)}
+                </span>
               </div>
             )}
 
             {/* Bullets Breakdown */}
-            {visualData?.bullets && Array.isArray(visualData.bullets) && visualData.bullets.length > 0 && (
+            {((visualData?.bullets && Array.isArray(visualData.bullets) && visualData.bullets.length > 0) || (explanation && explanation.length > 20)) && (
               <div className="p-4 bg-slate-900/70 border border-slate-800 rounded-xl space-y-2">
                 <div className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                   {explanationMode === "hard"
                     ? "Advanced Derivation Points & Invariants:"
                     : explanationMode === "medium"
                     ? "Key Quantitative Steps:"
-                    : "Key Observations:"}
+                    : "Key Observations & Principles:"}
                 </div>
                 <ul className="space-y-1.5 text-xs text-slate-300 font-sans">
-                  {visualData.bullets.map((b: string, i: number) => (
+                  {(visualData?.bullets && visualData.bullets.length > 0
+                    ? visualData.bullets
+                    : explanation.split(/[.!?।\n]+/).map(s => s.trim()).filter(s => s.length > 15).slice(0, 4)
+                  ).map((b: string, i: number) => (
                     <li key={i} className="flex items-start gap-2">
                       <span className="text-cyan-400 mt-0.5">•</span>
                       <span>{b}</span>
@@ -1215,7 +1251,8 @@ export const ChalkboardVisual: React.FC<ChalkboardVisualProps> = ({
                     : "Everyday Real-World Analogy"}
                 </div>
                 <p className="text-xs text-slate-200 leading-relaxed">
-                  {visualData?.real_world_example || realWorldExample}
+                  {visualData?.real_world_example ||
+                    `Practical Application: ${title} governs system transitions and observed behavior in real-world environments.`}
                 </p>
               </div>
             </div>

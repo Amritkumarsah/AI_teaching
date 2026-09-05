@@ -28,13 +28,15 @@ interface FlashcardStudyModalProps {
   onClose: () => void;
   topic?: string;
   level?: string;
+  docId?: string | null;
 }
 
 export const FlashcardStudyModal: React.FC<FlashcardStudyModalProps> = ({
   isOpen,
   onClose,
   topic = "physics",
-  level = "basic"
+  level = "basic",
+  docId = null
 }) => {
   const [cards, setCards] = useState<Flashcard[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -46,7 +48,8 @@ export const FlashcardStudyModal: React.FC<FlashcardStudyModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
     setIsLoading(true);
-    fetch(`http://localhost:8000/api/flashcards?topic=${encodeURIComponent(topic)}&level=${level}`)
+    const docParam = docId ? `&doc_id=${encodeURIComponent(docId)}` : "";
+    fetch(`http://localhost:8000/api/flashcards?topic=${encodeURIComponent(topic)}&level=${level}${docParam}`)
       .then((res) => res.json())
       .then((data) => {
         setCards(data.flashcards || []);

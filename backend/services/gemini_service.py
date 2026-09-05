@@ -204,4 +204,130 @@ Return a valid JSON array of {count} question objects with keys:
 
         return None
 
+    @classmethod
+    def generate_flashcards(cls, text: str, topic: str, count: int = 6, language: str = "en") -> Optional[List[Dict[str, Any]]]:
+        """
+        Uses Gemini to generate structured high-yield active recall flashcards grounded in document text.
+        """
+        if not cls.is_available():
+            return None
+
+        lang_instruction = "Hinglish (mix of Hindi and English)" if language == "hinglish" else ("Hindi (हिंदी)" if language == "hi" else "English")
+
+        prompt = f"""
+Create {count} high-yield, active-recall study flashcards for students about "{topic}".
+Source Material Context:
+{text[:2500] if text else 'Core concepts of ' + topic}
+
+Language: {lang_instruction}
+
+Return a valid JSON array of {count} flashcard objects with keys:
+- "id": integer 1 to {count}
+- "category": string (e.g., "Core Principle", "Key Equation / Definition", "High-Frequency Exam Trap", "Mechanism / Architecture", "Boundary Condition")
+- "front": string (concise question or trigger prompt)
+- "back": string (clear, accurate, punchy explanation)
+- "formula": string (mathematical formula, code snippet, or core rule)
+- "memory_hook": string (catchy mnemonic or real-world mental model)
+"""
+        raw = cls.generate_content(
+            prompt,
+            system_instruction="Output a valid JSON array of flashcard objects.",
+            timeout=3.0,
+            response_json=True,
+            models=["gemini-3.5-flash"]
+        )
+        if not raw:
+            return None
+
+        try:
+            clean = raw.strip()
+            if clean.startswith("```json"):
+                clean = clean[7:]
+            if clean.startswith("```"):
+                clean = clean[3:]
+            if clean.endswith("```"):
+                clean = clean[:-3]
+            parsed = json.loads(clean.strip())
+            if isinstance(parsed, list) and len(parsed) > 0:
+                return parsed[:count]
+        except Exception as e:
+            logger.warning(f"Failed to parse Gemini flashcards response: {e}")
+
+        return None
+
+    @classmethod
+    def generate_cheat_sheet(cls, text: str, topic: str, language: str = "en") -> Optional[Dict[str, Any]]:
+        """
+        Uses Gemini to generate an exam-cram summary sheet grounded in document text.
+        """
+        if not cls.is_available():
+            return None
+
+        lang_instruction = "Hinglish (mix of Hindi and English)" if language == "hinglish" else ("Hindi (हिंदी)" if language == "hi" else "English")
+
+        prompt = f"""
+Create an authoritative, 1-page High-Yield Exam Cram Cheat Sheet for students about "{topic}".
+Source Material Context:
+{text[:3000] if text else 'Core concepts of ' + topic}
+
+Language: {lang_instruction}
+
+Return a valid JSON object with the following structure:
+{{
+  "topic": "{topic}",
+  "exam_badge": "High Yield • Core Revision Sheet",
+  "key_formulas": [
+    {{
+      "name": "Formula or Definition Name",
+      "equation": "Mathematical equation, code syntax, or fundamental law",
+      "si_units": "Units, parameter types, or boundary constraints",
+      "note": "Critical exam takeaway"
+    }}
+  ],
+  "common_exam_traps": [
+    {{
+      "trap": "Common student mistake or fallacy",
+      "why_it_happens": "Why students get confused",
+      "pro_tip": "How to avoid losing marks"
+    }}
+  ],
+  "solved_practice_problems": [
+    {{
+      "problem": "Typical exam numerical or conceptual question",
+      "solution_steps": ["Step 1...", "Step 2...", "Step 3..."],
+      "answer": "Final concise answer"
+    }}
+  ],
+  "rapid_revision_mnemonics": [
+    "Memory acronym or hook 1",
+    "Memory acronym or hook 2"
+  ]
+}}
+"""
+        raw = cls.generate_content(
+            prompt,
+            system_instruction="Output a valid JSON object matching the requested cheat sheet schema.",
+            timeout=3.0,
+            response_json=True,
+            models=["gemini-3.5-flash"]
+        )
+        if not raw:
+            return None
+
+        try:
+            clean = raw.strip()
+            if clean.startswith("```json"):
+                clean = clean[7:]
+            if clean.startswith("```"):
+                clean = clean[3:]
+            if clean.endswith("```"):
+                clean = clean[:-3]
+            parsed = json.loads(clean.strip())
+            if isinstance(parsed, dict) and "key_formulas" in parsed:
+                return parsed
+        except Exception as e:
+            logger.warning(f"Failed to parse Gemini cheat sheet response: {e}")
+
+        return None
+
 gemini_service = GeminiService()

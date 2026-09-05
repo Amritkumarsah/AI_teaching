@@ -240,13 +240,20 @@ async def synthesize_speech(req: SpeechRequest):
     return result
 
 @app.get("/api/flashcards")
-def get_flashcards(topic: Optional[str] = "physics", level: Optional[str] = "basic"):
+def get_flashcards(topic: Optional[str] = "physics", level: Optional[str] = "basic", doc_id: Optional[str] = None, language: Optional[str] = "en"):
     """
     High-Yield Interactive Flashcards for rapid spaced-repetition revision.
+    Strictly grounded in uploaded document chunks and dynamic topic synthesis.
     """
+    chunks = rag_engine.documents.get(doc_id, []) if doc_id else []
+    if not chunks and topic:
+        retrieval = rag_engine.retrieve(query=topic, doc_id=doc_id, top_k=6)
+        chunks = retrieval.get("retrieved_chunks", [])
+
     topic_clean = (topic or "").lower()
-    
-    if any(k in topic_clean for k in ["newton", "force", "motion", "inertia", "gravity", "physic"]):
+
+    # Curated golden references if user explicitly studies Newton without custom document
+    if not doc_id and any(k in topic_clean for k in ["newton", "force", "motion", "inertia"]):
         cards = [
             {
                 "id": 1,
@@ -297,7 +304,7 @@ def get_flashcards(topic: Optional[str] = "physics", level: Optional[str] = "bas
                 "memory_hook": "Fuel burns away -> rocket gets lighter -> acceleration increases exponentially toward burnout."
             }
         ]
-    elif any(k in topic_clean for k in ["transformer", "ai", "attention", "neural", "deep learning"]):
+    elif not doc_id and any(k in topic_clean for k in ["transformer", "ai", "attention", "neural", "deep learning"]):
         cards = [
             {
                 "id": 1,
@@ -325,35 +332,30 @@ def get_flashcards(topic: Optional[str] = "physics", level: Optional[str] = "bas
             }
         ]
     else:
-        cards = [
-            {
-                "id": 1,
-                "category": "Foundational Concept",
-                "front": f"Core Principle of {topic.title()}",
-                "back": f"The foundational operational framework that governs state transitions, inputs, and observed outputs in {topic}.",
-                "formula": r"\text{Input} \longrightarrow \mathcal{T}[\text{Process}] \longrightarrow \text{Equilibrium}",
-                "memory_hook": "Identify inputs, primary transformation mechanism, and final stable outcome."
-            },
-            {
-                "id": 2,
-                "category": "Exam Rule",
-                "front": f"Key Law & Conservation in {topic.title()}",
-                "back": "Every energetic or state change obeys total conservation invariants across closed system boundaries.",
-                "formula": r"\Delta E_{\text{system}} = 0 \quad (\text{Closed boundary})",
-                "memory_hook": "Always check boundary conditions before applying standard formulas."
-            }
-        ]
+        # Dynamically generate from uploaded chunks or topic
+        cards = assessment_engine.generate_dynamic_flashcards(
+            topic=topic or "Study Material",
+            chunks=chunks,
+            level=level or "basic",
+            language=language or "en"
+        )
 
-    return {"topic": topic, "level": level, "total_cards": len(cards), "flashcards": cards}
+    return {"topic": topic, "level": level, "doc_id": doc_id, "total_cards": len(cards), "flashcards": cards}
 
 @app.get("/api/exam-cheat-sheet")
-def get_exam_cheat_sheet(topic: Optional[str] = "physics", level: Optional[str] = "basic"):
+def get_exam_cheat_sheet(topic: Optional[str] = "physics", level: Optional[str] = "basic", doc_id: Optional[str] = None, language: Optional[str] = "en"):
     """
     1-Click Exam Prep Summary Sheet (High-Yield Formulas, Common Exam Traps, Solved Practice Problems).
+    Grounded strictly in uploaded document chunks or dynamic topic synthesis.
     """
+    chunks = rag_engine.documents.get(doc_id, []) if doc_id else []
+    if not chunks and topic:
+        retrieval = rag_engine.retrieve(query=topic, doc_id=doc_id, top_k=6)
+        chunks = retrieval.get("retrieved_chunks", [])
+
     topic_clean = (topic or "").lower()
 
-    if any(k in topic_clean for k in ["newton", "force", "motion", "inertia", "physic"]):
+    if not doc_id and any(k in topic_clean for k in ["newton", "force", "motion", "inertia"]):
         cheat_sheet = {
             "topic": "Newton's Laws of Motion & Dynamics",
             "exam_badge": "High Yield • 95%+ Board / JEE Frequency",
@@ -366,18 +368,18 @@ def get_exam_cheat_sheet(topic: Optional[str] = "physics", level: Optional[str] 
             "common_exam_traps": [
                 {
                     "trap": "Thinking Action and Reaction Cancel Out",
-                    "explanation": "Exam question will ask 'Why does a horse move a cart if forces are equal and opposite?' Answer: They act on two different bodies (horse acts on cart, cart acts on horse; horse pushes ground backward, ground pushes horse forward).",
-                    "severity": "CRITICAL"
+                    "why_it_happens": "Exam question will ask 'Why does a horse move a cart if forces are equal and opposite?'",
+                    "pro_tip": "They act on two different bodies (horse acts on cart, cart acts on horse; horse pushes ground backward, ground pushes horse forward)."
                 },
                 {
                     "trap": "Confusing Velocity with Net Force",
-                    "explanation": "If a body moves with constant velocity, net force is ZERO, not positive! Force causes acceleration (speed change), not speed itself.",
-                    "severity": "HIGH"
+                    "why_it_happens": "Assuming positive speed implies positive net force.",
+                    "pro_tip": "If a body moves with constant velocity, net force is ZERO, not positive! Force causes acceleration, not speed."
                 },
                 {
                     "trap": "Forgetting Weight Changes in Accelerating Elevators",
-                    "explanation": "Apparent weight N = m(g + a) when accelerating upward; N = m(g - a) when accelerating downward; N = 0 in free fall.",
-                    "severity": "MEDIUM"
+                    "why_it_happens": "Not drawing the free body diagram with inertial acceleration.",
+                    "pro_tip": "Apparent weight N = m(g + a) when accelerating upward; N = m(g - a) downward; N = 0 in free fall."
                 }
             ],
             "solved_practice_problems": [
@@ -397,23 +399,13 @@ def get_exam_cheat_sheet(topic: Optional[str] = "physics", level: Optional[str] 
             ]
         }
     else:
-        cheat_sheet = {
-            "topic": topic.title(),
-            "exam_badge": "High Yield Revision Sheet",
-            "key_formulas": [
-                {"name": "Fundamental Relationship", "equation": "Output = TransferFunction(Input)", "si_units": "Standard SI Units", "note": "Core operational model."}
-            ],
-            "common_exam_traps": [
-                {"trap": "Confusing steady-state with transient state", "explanation": "Always identify if system has achieved equilibrium.", "severity": "HIGH"}
-            ],
-            "solved_practice_problems": [
-                {
-                    "problem": f"Sample analytical application of {topic.title()}.",
-                    "solution_steps": ["Analyze initial boundary conditions", "Apply conservation laws", "Verify dimensions and units"]
-                }
-            ],
-            "rapid_revision_mnemonics": ["Inspect -> Hypothesize -> Solve -> Verify"]
-        }
+        # Dynamically generate from uploaded chunks or topic
+        cheat_sheet = assessment_engine.generate_dynamic_cheat_sheet(
+            topic=topic or "Study Material",
+            chunks=chunks,
+            level=level or "basic",
+            language=language or "en"
+        )
 
     return cheat_sheet
 

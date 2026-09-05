@@ -47,12 +47,14 @@ interface ExamCheatSheetModalProps {
   isOpen: boolean;
   onClose: () => void;
   topic?: string;
+  docId?: string | null;
 }
 
 export const ExamCheatSheetModal: React.FC<ExamCheatSheetModalProps> = ({
   isOpen,
   onClose,
-  topic = "Newtonian Mechanics"
+  topic = "Newtonian Mechanics",
+  docId = null
 }) => {
   const [data, setData] = useState<CheatSheetData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -64,7 +66,8 @@ export const ExamCheatSheetModal: React.FC<ExamCheatSheetModalProps> = ({
     const fetchCheatSheet = async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:8000/api/exam-cheat-sheet");
+        const docParam = docId ? `&doc_id=${encodeURIComponent(docId)}` : "";
+        const res = await fetch(`http://localhost:8000/api/exam-cheat-sheet?topic=${encodeURIComponent(topic)}${docParam}`);
         if (res.ok) {
           const json = await res.json();
           const normalized: CheatSheetData = {

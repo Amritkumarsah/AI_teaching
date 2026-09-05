@@ -1167,7 +1167,7 @@ export default function Home() {
       <VideoPromptModal
         isOpen={showVideoPrompt}
         onClose={() => setShowVideoPrompt(false)}
-        conceptTitle={currentNodeContent?.title || "Newton's Laws of Motion"}
+        conceptTitle={currentNodeContent?.title || lessonPlan?.topic || "Study Concept"}
         visualType={currentNodeContent?.visual_type || "SIMULATION_DIAGRAM"}
       />
 
@@ -1175,7 +1175,7 @@ export default function Home() {
       <ComparisonPlansModal
         isOpen={showComparison}
         onClose={() => setShowComparison(false)}
-        currentTopic={lessonPlan?.topic || "Newton's Laws of Motion"}
+        currentTopic={lessonPlan?.topic || "Lesson Concepts"}
         docId={docId}
         currentLanguage={currentLanguage}
         onApplyPlan={(newPlan) => {
@@ -1197,14 +1197,17 @@ export default function Home() {
       <FlashcardStudyModal
         isOpen={showFlashcards}
         onClose={() => setShowFlashcards(false)}
-        topic={currentNodeContent?.title || lessonPlan?.topic || "Newtonian Mechanics"}
+        topic={lessonPlan?.topic || currentNodeContent?.title || "Study Material"}
+        docId={docId}
+        level={explanationMode}
       />
 
       {/* Section 18: High-Yield Exam Cram & Formula Cheat Sheet */}
       <ExamCheatSheetModal
         isOpen={showCheatSheet}
         onClose={() => setShowCheatSheet(false)}
-        topic={currentNodeContent?.title || lessonPlan?.topic || "Newtonian Mechanics"}
+        topic={lessonPlan?.topic || currentNodeContent?.title || "Study Material"}
+        docId={docId}
       />
     </div>
   );

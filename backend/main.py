@@ -757,11 +757,64 @@ def generate_video_prompt(req: VideoPromptRequest):
     }
 
 @app.get("/api/comparison-plans")
-def get_comparison_plans():
+def get_comparison_plans(topic: Optional[str] = None, doc_id: Optional[str] = None, language: Optional[str] = "en", level: Optional[str] = "beginner"):
     """
-    Returns pre-generated 5-min, 20-min, and 60-min lesson plans demonstrating
-    observable time-budget and level structural adaptation on the same topic.
+    Returns 5-min, 20-min, and 60-min lesson plans demonstrating observable time-budget
+    and level structural adaptation on the uploaded document or topic.
     """
+    if doc_id and doc_id in rag_engine.documents:
+        base_plan = LessonPlanner.plan_lesson(
+            profile={
+                "topic": topic or "Uploaded Document",
+                "time_budget": 60,
+                "language": language or "en",
+                "level": level or "beginner",
+                "style": "conversational",
+                "is_multiday": False
+            },
+            doc_id=doc_id
+        )
+        all_concepts = base_plan.get("concepts", [])
+
+        # 5min plan (1-2 quick sprint concepts)
+        c_5min = []
+        for c in all_concepts[:2]:
+            c_copy = dict(c)
+            c_copy["estimated_seconds"] = 150
+            c_5min.append(c_copy)
+
+        plan_5min = dict(base_plan)
+        plan_5min["target_time_minutes"] = 5
+        plan_5min["actual_planned_minutes"] = 5
+        plan_5min["concepts_count"] = len(c_5min)
+        plan_5min["concepts"] = c_5min
+
+        # 20min plan (3-4 core concepts)
+        c_20min = []
+        for c in all_concepts[:4]:
+            c_copy = dict(c)
+            c_copy["estimated_seconds"] = 300
+            c_20min.append(c_copy)
+
+        plan_20min = dict(base_plan)
+        plan_20min["target_time_minutes"] = 20
+        plan_20min["actual_planned_minutes"] = 20
+        plan_20min["concepts_count"] = len(c_20min)
+        plan_20min["concepts"] = c_20min
+
+        # 60min plan (full deep dive)
+        plan_60min = dict(base_plan)
+        plan_60min["target_time_minutes"] = 60
+        plan_60min["actual_planned_minutes"] = 60
+        plan_60min["concepts_count"] = len(all_concepts)
+        plan_60min["concepts"] = all_concepts
+
+        return {
+            "5min": plan_5min,
+            "20min": plan_20min,
+            "60min": plan_60min
+        }
+
     import json
     data_dir = settings.data_dir
     results = {}

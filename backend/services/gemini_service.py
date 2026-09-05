@@ -28,7 +28,7 @@ class GeminiService:
         return bool(settings.gemini_api_key and len(settings.gemini_api_key.strip()) > 10)
 
     @classmethod
-    def generate_content(cls, prompt: str, system_instruction: Optional[str] = None, timeout: float = 25.0, response_json: bool = False, models: Optional[List[str]] = None) -> Optional[str]:
+    def generate_content(cls, prompt: str, system_instruction: Optional[str] = None, timeout: float = 4.0, response_json: bool = False, models: Optional[List[str]] = None) -> Optional[str]:
         if not cls.is_available():
             return None
 
@@ -54,7 +54,7 @@ class GeminiService:
             "generationConfig": gen_config
         }
 
-        candidate_models = models or cls.MODELS
+        candidate_models = models or ["gemini-3.5-flash"]
         for model in candidate_models:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={key}"
             try:
@@ -103,7 +103,9 @@ Only output valid JSON.
         raw = cls.generate_content(
             prompt,
             system_instruction="Output a valid JSON array of objects. Each object represents a concept with title, summary, key_terms, question, sample_answer, options, and correct_option.",
-            response_json=True
+            timeout=2.5,
+            response_json=True,
+            models=["gemini-3.5-flash"]
         )
         if not raw:
             return None

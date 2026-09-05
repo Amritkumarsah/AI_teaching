@@ -41,7 +41,10 @@ export const ComparisonPlansModal: React.FC<ComparisonPlansModalProps> = ({
   useEffect(() => {
     if (!isOpen) return;
     setIsLoading(true);
-    fetch("http://localhost:8000/api/comparison-plans")
+    const docParam = docId ? `&doc_id=${encodeURIComponent(docId)}` : "";
+    const topicParam = currentTopic ? `topic=${encodeURIComponent(currentTopic)}` : "topic=Lesson";
+    const langParam = currentLanguage ? `&language=${encodeURIComponent(currentLanguage)}` : "";
+    fetch(`http://localhost:8000/api/comparison-plans?${topicParam}${docParam}${langParam}`)
       .then((res) => res.json())
       .then((data) => {
         setPlans(data);
@@ -51,7 +54,7 @@ export const ComparisonPlansModal: React.FC<ComparisonPlansModalProps> = ({
         console.error("Error fetching comparison plans:", err);
         setIsLoading(false);
       });
-  }, [isOpen]);
+  }, [isOpen, docId, currentTopic, currentLanguage]);
 
   if (!isOpen) return null;
 

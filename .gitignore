@@ -1,0 +1,53 @@
+# Dependencies
+node_modules/
+**/node_modules/
+.pnp
+.pnp.js
+
+# Environment Variables (Never commit keys)
+.env
+.env*
+*.env
+backend/.env
+frontend/.env*
+
+# Build Outputs
+dist/
+**/dist/
+build/
+.next/
+**/build/
+**/out/
+out/
+
+# Python venv & cache
+venv/
+**/venv/
+env/
+**/__pycache__/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+**/.pytest_cache/
+
+# Generated Media & Uploads
+backend/static/audio/*.mp3
+backend/static/audio/*.vtt
+backend/static/video/*.mp4
+backend/data/uploads/*
+backend/data/*.db
+apps/api/uploads/
+**/uploads/
+**/data/uploads/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS Metadata
+.DS_Store
+Thumbs.db

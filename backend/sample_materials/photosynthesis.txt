@@ -1,0 +1,27 @@
+# CHAPTER 7: PHOTOSYNTHESIS IN HIGHER PLANTS
+
+## 7.1 Overview of Photosynthesis
+Photosynthesis is a physico-chemical process by which green plants use light energy to synthesize organic compounds (glucose) from carbon dioxide and water, releasing oxygen as a byproduct.
+
+Chemical Equation:
+6 CO2 + 6 H2O + Light Energy -> C6H12O6 + 6 O2
+
+Location:
+Photosynthesis takes place inside the chloroplasts of mesophyll cells in plant leaves.
+- Grana / Thylakoids: Site of light-dependent reactions (trapping solar energy and photolysis of water).
+- Stroma: Fluid matrix site of light-independent (dark) reactions or Calvin Cycle (carbon fixation).
+
+## 7.2 Light Reactions (Photochemical Phase)
+1. Light Absorption: Chlorophyll pigments in Photosystem II (P680) and Photosystem I (P700) absorb photons.
+2. Water Splitting (Photolysis): 2 H2O -> 4 H+ + 4 e- + O2. This releases molecular oxygen into the atmosphere.
+3. ATP and NADPH Synthesis: Electrons move through an electron transport chain via chemiosmosis to produce energy-rich ATP and NADPH.
+
+## 7.3 Dark Reactions (Calvin Cycle / Biosynthetic Phase)
+The ATP and NADPH produced in the light reactions are used to fix carbon dioxide into carbohydrates.
+Stages of Calvin Cycle:
+1. Carboxylation: CO2 is fixed by the enzyme RuBisCO with Ribulose-1,5-bisphosphate (RuBP) into 3-PGA.
+2. Reduction: 3-PGA is converted to glyceraldehyde-3-phosphate (G3P) and glucose using ATP and NADPH.
+3. Regeneration: RuBP is regenerated using ATP so the cycle can continue.
+
+Common Misconceptions:
+- Misconception 1: "Dark reactions only happen at night." Reality: Dark reactions do not require direct photons, but they depend immediately on ATP and NADPH synthesized during light reactions. Hence, in nature, dark reactions occur during the daytime.

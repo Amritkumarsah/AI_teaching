@@ -1,0 +1,56 @@
+name: AI Teacher CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  audit-and-test:
+    name: Build, Lint & Test Verification
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Monorepo Dependencies
+        run: npm ci
+
+      - name: Compile Types Package
+        run: npm run build --workspace=@ai-teacher/types
+
+      - name: Run Core Test Suites
+        env:
+          MONGODB_URI: mongodb://127.0.0.1:27017/ai_teacher_test
+          JWT_SECRET: ci_test_super_secret_jwt_key_2026
+          NODE_ENV: test
+        run: |
+          npm run test:auth --workspace=@ai-teacher/api
+          npm run test:docs --workspace=@ai-teacher/api
+          npm run test:planner --workspace=@ai-teacher/api
+          npm run test:teaching --workspace=@ai-teacher/api
+          npm run test:assessment --workspace=@ai-teacher/api
+          npm run test:voice --workspace=@ai-teacher/api
+          npm run test:video --workspace=@ai-teacher/api
+          npm run test:analytics --workspace=@ai-teacher/api
+          npm run test:hardening --workspace=@ai-teacher/api
+
+      - name: Build Web Application
+        run: npm run build --workspace=@ai-teacher/web
+
+      - name: Build API Service
+        run: npm run build --workspace=@ai-teacher/api

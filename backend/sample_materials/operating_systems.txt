@@ -1,0 +1,64 @@
+# CHAPTER 3: PROCESS MANAGEMENT & OPERATING SYSTEM CONCEPTS
+
+## 3.1 What is a Process?
+An Operating System is responsible for managing system resources and orchestrating multiple activities simultaneously. At the heart of modern operating systems lies the concept of a "Process".
+
+A Process is defined simply as a **program in execution**.
+While a **program** is a passive entity—such as a file containing a list of instructions stored on disk (an executable file like `a.out` or `chrome.exe`)—a **process** is an active entity, with a program counter specifying the next instruction to execute and a set of associated resources.
+
+### Process Memory Layout:
+When a program is loaded into memory to become a process, its address space is divided into four distinct sections:
+1. **Text Section**: The compiled machine code/instructions executed by the CPU.
+2. **Data Section**: Global and static variables initialized before runtime.
+3. **Heap Section**: Memory dynamically allocated at runtime (via `malloc` in C or `new` in C++/Java).
+4. **Stack Section**: Temporary data storage containing function parameters, return addresses, and local variables.
+
+### Common Misconception:
+- **Misconception 1**: "A Program and a Process are the same thing."
+- **Reality**: A program is a passive recipe stored on secondary storage (hard drive/SSD). A process is the active cooking in the kitchen (loaded in RAM with active CPU registers, stack pointers, and open file descriptors). Two users running the same program simultaneously create two separate processes with independent memory spaces!
+
+---
+
+## 3.2 Process States & Lifecycle
+As a process executes, it transitions through different states depending on CPU scheduling and I/O availability:
+
+1. **New**: The process is currently being created and loaded into memory.
+2. **Ready**: The process is loaded in main memory and is waiting to be assigned to a CPU core by the scheduler.
+3. **Running**: Instructions are currently being executed by the CPU core.
+4. **Waiting (Blocked)**: The process cannot proceed until some external event occurs (such as an I/O operation completing or receiving an operating system signal).
+5. **Terminated**: The process has finished execution, and its resources are being reclaimed by the OS.
+
+### State Transitions:
+- `New -> Ready`: Admitted by long-term scheduler.
+- `Ready -> Running`: Selected by the CPU scheduler (dispatch).
+- `Running -> Ready`: Preempted due to time-slice expiration (timer interrupt).
+- `Running -> Waiting`: Initiates an I/O request or waits for a mutex/semaphore.
+- `Waiting -> Ready`: I/O operation completes; placed back in the Ready Queue.
+- `Running -> Terminated`: Program exits or encounters a fatal exception.
+
+---
+
+## 3.3 The Process Control Block (PCB)
+Each process in the operating system is represented by its own **Process Control Block (PCB)**, also called a Task Control Block. The PCB serves as the repository for all information required to pause and resume the process:
+
+- **Process Identifier (PID)**: Unique integer identifying the process in the system.
+- **Process State**: Current state (Ready, Running, Waiting, etc.).
+- **Program Counter (PC)**: Address of the next instruction to be executed for this process.
+- **CPU Registers**: Values of data registers, accumulators, stack pointers, and index registers.
+- **CPU-Scheduling Information**: Process priority, scheduling queue pointers.
+- **Memory-Management Information**: Base and limit registers, page tables, or segment tables.
+- **Accounting Information**: Amount of CPU time used, clock time limits.
+- **I/O Status Information**: List of I/O devices allocated, open files table.
+
+---
+
+## 3.4 Context Switching
+Switching the CPU core to another process requires performing a state save of the current process and a state restore of the different process. This operation is called a **Context Switch**.
+
+When a context switch occurs:
+1. The kernel saves the context of the running process in its PCB (registers, program counter).
+2. The scheduler selects a new process from the Ready Queue.
+3. The kernel loads the saved context of the newly selected process from its PCB into the CPU hardware registers.
+4. The CPU begins executing instructions of the new process at its program counter address.
+
+Context switch time is pure computational overhead because the system does no useful user work while switching. Speed typically ranges from a few microseconds depending on hardware architecture and cache flushes.

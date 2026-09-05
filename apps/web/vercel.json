@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://ai-teacher-api.onrender.com/api/$1"
+    },
+    {
+      "source": "/static/(.*)",
+      "destination": "https://ai-teacher-api.onrender.com/static/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

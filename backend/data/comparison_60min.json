@@ -1,0 +1,137 @@
+{
+  "topic": "Newton's Laws of Motion",
+  "learner_level": "intermediate",
+  "target_time_minutes": 60,
+  "actual_planned_minutes": 21,
+  "language": "hi",
+  "teaching_style": "rigorous",
+  "is_grounded": false,
+  "confidence_framing": "general_knowledge",
+  "grounding_notice": "General Knowledge Mode: Material synthesized from foundational domain principles.",
+  "concepts_count": 5,
+  "concepts": [
+    {
+      "id": "c1",
+      "order": 1,
+      "title": "1. Galileo's Insight & Inertia (First Law)",
+      "depth": "standard",
+      "explanation_focus": "Transition from Aristotelian intuition to Galileo's inclined planes and Newton's definition of inertia.",
+      "analogy": "Slamming the brakes in a bus: passengers lurch forward because their bodies possess inertia.",
+      "visual_type": "SIMULATION_DIAGRAM",
+      "visual_title": "Newton's 1st Law: Net Force = 0 => Constant Velocity",
+      "estimated_seconds": 220,
+      "checkpoint_question": {
+        "id": "q1",
+        "type": "mcq",
+        "question": "When a car makes a sharp left turn, why do passengers feel thrown toward the right?",
+        "options": [
+          "A mysterious centrifugal force pushes them outward.",
+          "Their body inertia wants to continue moving straight ahead while the car turns left.",
+          "The car's engine generates rightward momentum.",
+          "Gravity tilts to the right side."
+        ],
+        "correct_answer_index": 1,
+        "rubric": "Identifies inertia resisting direction change.",
+        "misconception_traps": {
+          "0": "Invented force misconception: Attributing inertia to an active outward push."
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "order": 2,
+      "title": "2. The Mathematical Engine: F = dp/dt = m*a (Second Law)",
+      "depth": "standard",
+      "explanation_focus": "Rate of change of momentum, relation to acceleration, unit of Newton (kg*m/s^2).",
+      "analogy": "Pushing an empty shopping cart vs. pushing a cart stacked with heavy bricks.",
+      "visual_type": "EQUATION",
+      "visual_title": "F_net = m * a  |  1 N = 1 kg * m/s²",
+      "estimated_seconds": 260,
+      "checkpoint_question": {
+        "id": "q2",
+        "type": "short_answer",
+        "question": "If you double the net force applied to a mass while cutting its mass in half, by what factor does acceleration change?",
+        "sample_answer": "Acceleration increases by a factor of 4 (a = 2F / (0.5m) = 4 * (F/m)).",
+        "rubric": "Mathematical deduction using a = F/m resulting in 4x.",
+        "misconception_traps": {
+          "2": "Forgetting that halving mass also doubles acceleration."
+        }
+      }
+    },
+    {
+      "id": "c3",
+      "order": 3,
+      "title": "3. Gravitational Equality & Free Fall Misconception",
+      "depth": "standard",
+      "explanation_focus": "Why a bowling ball and a feather drop at identical rates in a vacuum despite different masses.",
+      "analogy": "Galileo at the Leaning Tower of Pisa and Apollo 15 hammer-feather drop on the Moon.",
+      "visual_type": "SIMULATION_DIAGRAM",
+      "visual_title": "Free Fall in Vacuum: a = (m*g) / m = g (Identical for all masses)",
+      "estimated_seconds": 240,
+      "checkpoint_question": {
+        "id": "q3",
+        "type": "explain_own_words",
+        "question": "Why does a 10 kg iron ball experience 10 times more gravitational force than a 1 kg ball, yet both accelerate at the exact same rate?",
+        "sample_answer": "Because the 10 kg ball also has 10 times more inertia (resistance to acceleration), so the extra force is perfectly balanced by the extra mass (a = F/m).",
+        "rubric": "Must mention that greater force is countered by proportionally greater inertia/mass.",
+        "misconception_traps": {
+          "heavier falls faster": "Common gravity-mass misconception."
+        }
+      }
+    },
+    {
+      "id": "c4",
+      "order": 4,
+      "title": "4. Action-Reaction Pairs: Rockets & Earth Recoil (Third Law)",
+      "depth": "standard",
+      "explanation_focus": "Simultaneous paired forces on distinct bodies. Rocket propulsion mechanics.",
+      "analogy": "A rocket expelling hot exhaust gas downward; the gas pushes the rocket upward into space.",
+      "visual_type": "SIMULATION_DIAGRAM",
+      "visual_title": "Action-Reaction: F_rocket_on_gas = - F_gas_on_rocket",
+      "estimated_seconds": 250,
+      "checkpoint_question": {
+        "id": "q4",
+        "type": "mcq",
+        "question": "When a small mosquito collides with the windshield of a speeding truck, which force is greater?",
+        "options": [
+          "The truck exerts a much larger force on the mosquito than the mosquito exerts on the truck.",
+          "The forces exerted by the mosquito and truck on each other are exactly equal in magnitude.",
+          "The mosquito exerts a larger force because it decelerates faster.",
+          "It depends on the relative speed of the mosquito."
+        ],
+        "correct_answer_index": 1,
+        "rubric": "Newton's 3rd Law equality of force magnitudes regardless of mass asymmetry.",
+        "misconception_traps": {
+          "0": "Damage-force conflation: Confusing resulting acceleration/damage with the magnitude of the mutual interaction force."
+        }
+      }
+    },
+    {
+      "id": "c5",
+      "order": 5,
+      "title": "5. Applied Real-World Problem Solving & Multi-Body Systems",
+      "depth": "rigorous",
+      "explanation_focus": "Free body diagrams, tension forces, elevator apparent weight, and friction coefficient problems.",
+      "analogy": "An elevator accelerating upward where your bathroom scale reads heavier than normal.",
+      "visual_type": "SIMULATION_DIAGRAM",
+      "visual_title": "Apparent Weight: N = m * (g + a)",
+      "estimated_seconds": 320,
+      "checkpoint_question": {
+        "id": "q5",
+        "type": "short_answer",
+        "question": "If you stand on a scale inside an elevator that suddenly snaps its cables and enters free fall, what does the scale read?",
+        "sample_answer": "Zero (apparent weightlessness), because both you and the scale accelerate downward at g.",
+        "rubric": "Correctly states zero or apparent weightlessness.",
+        "misconception_traps": {}
+      }
+    }
+  ],
+  "final_assessment_overview": {
+    "total_questions": 3,
+    "question_types": [
+      "mcq",
+      "short_answer",
+      "explain_own_words"
+    ]
+  }
+}

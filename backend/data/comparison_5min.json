@@ -1,0 +1,70 @@
+{
+  "topic": "Newton's Laws of Motion",
+  "learner_level": "beginner",
+  "target_time_minutes": 5,
+  "actual_planned_minutes": 4,
+  "language": "hi",
+  "teaching_style": "intuitive",
+  "is_grounded": false,
+  "confidence_framing": "general_knowledge",
+  "grounding_notice": "General Knowledge Mode: Material synthesized from foundational domain principles.",
+  "concepts_count": 2,
+  "concepts": [
+    {
+      "id": "c1",
+      "order": 1,
+      "title": "Inertia & Newton's First Law (The Core Truth)",
+      "depth": "concise",
+      "explanation_focus": "Why objects keep moving forever without friction, and why inertia is mass.",
+      "analogy": "A frictionless skateboard gliding through deep space without ever slowing down.",
+      "visual_type": "SIMULATION_DIAGRAM",
+      "visual_title": "Frictionless Motion & Force Vectors",
+      "estimated_seconds": 130,
+      "checkpoint_question": {
+        "id": "q1",
+        "type": "mcq",
+        "question": "If an astronaut throws a wrench in deep space where no friction or gravity exists, what happens?",
+        "options": [
+          "The wrench eventually slows down and stops because force runs out.",
+          "The wrench continues moving forever at the same constant speed in a straight line.",
+          "The wrench orbits back to the astronaut.",
+          "The wrench instantly falls straight down."
+        ],
+        "correct_answer_index": 1,
+        "rubric": "Evaluates understanding that continuous motion does not require continuous force in the absence of net external force.",
+        "misconception_traps": {
+          "0": "Aristotelian misconception: Believing motion requires an ongoing push."
+        }
+      }
+    },
+    {
+      "id": "c2",
+      "order": 2,
+      "title": "Action-Reaction Pairs (Newton's Third Law)",
+      "depth": "concise",
+      "explanation_focus": "Forces always come in mutual pairs acting on separate bodies, so they never cancel out.",
+      "analogy": "Stepping off a boat onto a dock: you push the boat back, the boat pushes you forward.",
+      "visual_type": "EQUATION",
+      "visual_title": "Action = -Reaction (F_AB = -F_BA)",
+      "estimated_seconds": 150,
+      "checkpoint_question": {
+        "id": "q2",
+        "type": "short_answer",
+        "question": "If action and reaction forces are equal and opposite, why don't they cancel each other out?",
+        "sample_answer": "They do not cancel because they act on two different objects, not on the same object.",
+        "rubric": "Must explicitly identify that forces act on two distinct/different bodies.",
+        "misconception_traps": {
+          "cancel": "Canceling forces fallacy: Thinking action-reaction act on the identical body."
+        }
+      }
+    }
+  ],
+  "final_assessment_overview": {
+    "total_questions": 2,
+    "question_types": [
+      "mcq",
+      "short_answer",
+      "explain_own_words"
+    ]
+  }
+}
